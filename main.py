@@ -79,7 +79,7 @@ async def on_message(message):
 
 	if message.content.startswith("$benny_log"):
 		rows = await Database().get_benny_log()
-		if row:
+		if rows:
 			final_rows = ['THE TEN MOST RECENT LOGS:']
 			for row in rows:
 				curr = ''.join([row[0], ' | ', f'{str(row[1]):.4}', ' SECONDS'])
