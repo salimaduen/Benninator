@@ -15,7 +15,6 @@ load_dotenv()
 benny_id = int(os.getenv('TARGET_ID'))
 channel_id = int(os.getenv('CHANNEL_ID'))
 the_benny = False
-is_benny_deaf = False
 time_before = 0
 
 voice_channels = []
@@ -69,9 +68,17 @@ async def on_message(message):
 	if message.author == client.user:
         	return
 
+	if message.content.startswith("$benny_help"):
+		msg = '''
+		List of commands:
+		- $benny_log - Prints the ten most recent benny logs
+		- $benny_total - Prints the total benny deafened time
+		- $benny_code - Prints the info for the source code
+		      '''
+
 	if message.content.startswith("$benny_log"):
 		rows = await Database().get_benny_log()
-		final_rows = ['THE THEN MOST RECENT LOGS:']
+		final_rows = ['THE THE MOST RECENT LOGS:']
 		for row in rows:
 			curr = ''.join([row[0], ' | ', f'{str(row[1]):.4}', ' SECONDS'])
 			final_rows.append(curr)
@@ -110,7 +117,6 @@ async def on_ready():
 			print(m)
 			if m.voice.self_mute:
 				time_before = datetime.now()
-				is_benny_deaf = True
 			break
 
 
