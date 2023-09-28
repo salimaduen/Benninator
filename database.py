@@ -26,20 +26,32 @@ class Database:
 		if not self.conn:
 			await self.connect()
 		query = '''
-			CREATE TABLE IF NOT EXISTS benny_log(
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
-			time_in_seconds REAL NOT NULL
-			);
+			CREATE TABLE IF NOT EXISTS benny_gamers(
+             		discord_id INTEGER PRIMARY KEY,
+             		username VARCHAR(50) UNIQUE NOT NULL,
+             		is_tracked TINYINT NOT NULL DEFAULT FALSE
+             		);
 			'''
+
 		query2 = '''
-			 CREATE TABLE IF NOT EXISTS log_total(
-			 id INTEGER PRIMARY KEY AUTOINCREMENT,
-			 timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
-			 time_in_seconds REAL NOT NULL
-			 );
+			CREATE TABLE IF NOT EXISTS benny_log(
+	                id INTEGER PRIMARY KEY AUTOINCREMENT,
+	                disord_id INTEGER,
+	                timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
+	                time_in_seconds REAL NOT NULL,
+	  		FOREIGN KEY (disord_id) REFERENCES benny_gamers(discord_id)
+          		 );
 			 '''
 		query3 = '''
+			  CREATE TABLE IF NOT EXISTS log_total(
+		          id INTEGER PRIMARY KEY AUTOINCREMENT,
+		          discord_id INTEGER,
+		          timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
+		          time_in_seconds REAL NOT NULL,
+		          FOREIGN KEY (discord_id) REFERENCES benny_gamers(discord_id)
+	  	   	  );
+			 '''
+		query4 = '''
 			 INSERT INTO log_total(id, time_in_seconds)
 			 VALUES (1, 0.0);
 			 '''
@@ -47,10 +59,11 @@ class Database:
 		try:
 			self.cursor.execute(query)
 			self.cursor.execute(query2)
+			self.cursor.execute(query3)
 
 			self.cursor.execute('SELECT * FROM log_total')
 			if len(self.cursor.fetchall()) <= 0:
-				self.cursor.execute(query3)
+				self.cursor.execute(query4)
 			self.conn.commit()
 			await self.close()
 
