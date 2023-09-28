@@ -41,25 +41,25 @@ async def calculate_time():
 @client.event
 async def on_voice_state_update(member, before, after):
 	global time_before
-	global the_benny, benny_id, is_benny_deaf
+	global the_benny, benny_id
 	if not the_benny and member.id == benny_id:
 		the_benny = True
 		print('JOINED VOICE CHAT')
-		if member.voice.self_mute:
+		if member.voice.self_deaf:
 			time_before = datetime.now()
 
 	if the_benny and member.id == benny_id:
 		if not await is_benny_in_vc():
 			the_benny = False
 			print('LEFT VOICE CHAT')
-			if before.self_mute and not after.self_mute:
+			if before.self_deaf and not after.self_deaf:
 				await calculate_time()
 		else:
-			if not before.self_mute and after.self_mute:
-				print('MUTED')
+			if not before.self_deaf and after.self_deaf:
+				print('DEAFENED')
 				time_before = datetime.now()
-			if before.self_mute and not after.self_mute:
-				print('UNMUTED')
+			if before.self_deaf and not after.self_deaf:
+				print('UNDEAFENED')
 				await calculate_time()
 
 @client.event
@@ -103,7 +103,7 @@ async def on_message(message):
 async def on_ready():
 	print(f"THE BENNINATOR HAS STARTED")
 	channels = client.get_all_channels()
-	global the_benny, benny_id, the_benny_state, voice_channels, time_before
+	global the_benny, benny_id, voice_channels, time_before
 	m = None
 	for channel in channels:
 		if channel.type.name == 'voice':
@@ -115,7 +115,7 @@ async def on_ready():
 					break
 		if the_benny:
 			print(m)
-			if m.voice.self_mute:
+			if m.voice.self_deaf:
 				time_before = datetime.now()
 			break
 
