@@ -12,7 +12,8 @@ client = discord.Client(intents=intents)
 
 load_dotenv()
 
-benny_id = os.getenv('TARGET_ID')
+benny_id = int(os.getenv('TARGET_ID'))
+channel_id = int(os.getenv('CHANNEL_ID'))
 the_benny = False
 is_benny_deaf = False
 time_before = 0
@@ -29,12 +30,13 @@ async def is_benny_in_vc():
 
 
 async def calculate_time():
-	global time_before, benny_id
+	global time_before, benny_id, channel_id
 	t = (datetime.now() - time_before).total_seconds()
+	await Database().add_benny_log(t)
 	time_before = 0
 	print(t)
 	msg = f'TEST TEST \n<@{benny_id}> spent {t:.3} seconds muted'
-	await client.get_channel(1156435514967212084).send(msg)
+	await client.get_channel(channel_id).send(msg)
 
 
 @client.event
@@ -63,17 +65,31 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
+	global channel_id
 	if message.author == client.user:
         	return
 
 	if message.content.startswith("$benny_log"):
 		rows = await Database().get_benny_log()
-		final_rows = []
+		final_rows = ['THE THEN MOST RECENT LOGS:']
 		for row in rows:
-			curr = ''.join([row[0], ' | ', str(row[1]), ' SECONDS'])
+			curr = ''.join([row[0], ' | ', f'{str(row[1]):.4}', ' SECONDS'])
 			final_rows.append(curr)
+
 		f = '\n'.join(final_rows)
-		await client.get_channel(1156435514967212084).send(f)
+		await client.get_channel(channel_id).send(f)
+
+	if message.content.startswith("$benny_total"):
+		t = await Database().get_total_time()
+		t, total = t[0]
+		msg = f'As of {t} <@{message.author.id}> has been deafened for a total of {total:.4} seconds'
+		await client.get_channel(channel_id).send(msg)
+
+	if message.content.startswith("$benny_code"):
+		msg = f'''The benninator is an open source project.
+		If you want to contribute just get the code from {os.getenv('GITHUB')}
+			  '''
+		await client.get_channel(channel_id).send(msg)
 
 
 @client.event

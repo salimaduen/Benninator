@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 import asyncio
 
@@ -31,12 +32,46 @@ class Database:
 			time_in_seconds REAL NOT NULL
 			);
 			'''
+		query2 = '''
+			 CREATE TABLE IF NOT EXISTS log_total(
+			 id INTEGER PRIMARY KEY AUTOINCREMENT,
+			 timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
+			 time_in_seconds REAL NOT NULL
+			 );
+			 '''
+		query3 = '''
+			 INSERT INTO log_total(id, time_in_seconds)
+			 VALUES (1, 0.0);
+			 '''
 
 		try:
 			self.cursor.execute(query)
+			self.cursor.execute(query2)
+
+			self.cursor.execute('SELECT * FROM log_total')
+			if len(self.cursor.fetchall()) <= 0:
+				self.cursor.execute(query3)
 			self.conn.commit()
 			await self.close()
 
+		except sqlite3.Error as e:
+			print(e)
+
+
+	async def update_total_log(self, time_in_seconds):
+		if not self.conn:
+			await self.connect()
+		try:
+			self.cursor.execute('SELECT time_in_seconds FROM log_total WHERE id = 1;')
+			curr_time = self.cursor.fetchall()[0][0]
+			total_time = time_in_seconds + curr_time
+			self.cursor.execute(f'''
+					    UPDATE log_total
+					    SET timestamp = \'{datetime.now()}\', time_in_seconds = {total_time} 
+					    WHERE id=1;
+					    ''')
+			self.conn.commit()
+			await self.close()
 		except sqlite3.Error as e:
 			print(e)
 
@@ -55,17 +90,22 @@ class Database:
 		except sqlite3.Error as e:
 			print(e)
 
+		await self.update_total_log(time_in_seconds)
 
 	async def get_benny_log(self):
 		if not self.conn:
 			await self.connect()
 		query = '''
-			SELECT timestamp, time_in_seconds FROM benny_log
+			SELECT timestamp, time_in_seconds
+			FROM benny_log
+			ORDER BY timestamp DESC
+			LIMIT 10;
 			'''
 
 		try:
 			self.cursor.execute(query)
 			rows = self.cursor.fetchall()
+			await self.close()
 			return rows
 		except sqlite3.Error as e:
 			print(e)
@@ -76,7 +116,21 @@ class Database:
 
 		try:
 			self.cursor.execute('DELETE FROM benny_log')
+			self.cursor.execute('DELETE FROM log_total')
 			self.conn.commit()
 			await self.close()
+		except sqlite3.Error as e:
+			print(e)
+
+	async def get_total_time(self):
+		if not self.conn:
+			await self.connect()
+
+		query = 'SELECT timestamp, time_in_seconds FROM log_total WHERE id = 1;'
+		try:
+			self.cursor.execute(query)
+			rows = self.cursor.fetchall()
+			await self.close()
+			return rows
 		except sqlite3.Error as e:
 			print(e)
