@@ -149,6 +149,8 @@ async def on_ready():
         the_benny_target = client.get_guild(server_id).get_member(tracked_gamer)
         if the_benny_target.voice.self_deaf:
             time_before = datetime.now()
+    else:
+        the_benny_target = None
 
 
 client.run(os.getenv('BOT_ID'))
