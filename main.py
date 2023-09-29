@@ -93,7 +93,7 @@ async def on_message(message):
                 await add_gamer(member)
                 await Database().make_new_benny_target(member.id)
                 the_benny_target = member
-                msg = f'The new target is {the_benny_target.name}!'
+                msg = f'The new target is <@{the_benny_target.id}>!'
                 await client.get_channel(channel_id).send(msg)
 
     if message.content.startswith("$benny_who"):

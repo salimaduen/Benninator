@@ -37,10 +37,10 @@ class Database:
 		query2 = '''
 			CREATE TABLE IF NOT EXISTS benny_log(
 	                id INTEGER PRIMARY KEY AUTOINCREMENT,
-	                disord_id INTEGER NOT NULL,
+	                discord_id INTEGER NOT NULL,
 	                timestamp DATETIME UNIQUE DEFAULT (datetime('now', 'localtime')),
 	                time_in_seconds REAL NOT NULL,
-	  		FOREIGN KEY (disord_id) REFERENCES benny_gamers(discord_id)
+	  		FOREIGN KEY (discord_id) REFERENCES benny_gamers(discord_id)
           		 );
 			 '''
 		query3 = '''
