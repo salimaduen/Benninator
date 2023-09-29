@@ -191,3 +191,23 @@ class Database:
 		except sqlite3.Error as e:
 			print(e)
 		return None
+
+	async def make_new_benny_target(self, new_id):
+		if not self.conn:
+			await self.connect()
+
+		query = 'SELECT discord_id from benny_gamers WHERE is_tracked = true'
+		try:
+			self.cursor.execute(query)
+			r = self.cursor.fetchone()
+			if r:
+				self.cursor.execute('''UPDATE benny_gamers
+				                    SET is_tracked = false
+				                    WHERE discord_id = ?
+				                    ''', r)
+			self.cursor.execute('''UPDATE benny_gamers
+				                    SET is_tracked = true
+				                    WHERE discord_id = ?
+				                    ''', new_id)
+		except sqlite3.Error as e:
+			print(e)

@@ -89,8 +89,17 @@ async def on_message(message):
             curr_id = await get_discord_id(msg[1])
             member = client.get_guild(server_id).get_member(int(curr_id))
             if member:
-            # await add_gamer(user)
-                print('MEMBER::', member.name)
+                await add_gamer(member)
+                await Database().make_new_benny_target(member.id)
+                the_benny_target = member
+
+    if message.content.startswith("$benny_who"):
+        msg = ''
+        if the_benny_target:
+            msg = ''.join(['The current target is ', the_benny_target.name])
+        else:
+            msg = ''.join(['There is currently no target'])
+        await client.get_channel(channel_id).send(msg)
 
     if message.content.startswith("$benny_help"):
         msg = '''
