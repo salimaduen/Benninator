@@ -64,7 +64,6 @@ class Database:
 		except sqlite3.Error as e:
 			print(e)
 
-
 	async def update_total_log(self, time_in_seconds, discord_id):
 		if not self.conn:
 			await self.connect()
@@ -90,12 +89,11 @@ class Database:
 
 		try:
 			self.cursor.execute(query)
-			await self.update_total_log(time_in_seconds, disocrd_id)
+			await self.update_total_log(time_in_seconds, discord_id)
 			self.conn.commit()
 			await self.close()
 		except sqlite3.Error as e:
 			print(e)
-
 
 	async def get_benny_log(self):
 		if not self.conn:
@@ -180,16 +178,16 @@ class Database:
 			print(e)
 		return False
 
-	async def is_gamer_tracked(self, discord_id):
+	async def get_tracked_gamer(self):
 		if not self.conn:
 			await self.connect()
-		query = 'SELECT * from benny_gamers WHERE is_tracked = true'
+		query = 'SELECT discord_id from benny_gamers WHERE is_tracked = true'
 		try:
 			self.cursor.execute(query)
 			r = self.cursor.fetchone()
 			await self.close()
 			if r:
-				return True
+				return r
 		except sqlite3.Error as e:
 			print(e)
-		return False
+		return None

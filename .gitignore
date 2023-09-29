@@ -1,5 +1,6 @@
 /__pycache__
 /venv
+/.idea
 test.py
 benny_base.db
 .database.py.swp
