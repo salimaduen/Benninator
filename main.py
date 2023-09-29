@@ -7,6 +7,7 @@ import os
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 client = discord.Client(intents=intents)
 
@@ -14,10 +15,30 @@ load_dotenv()
 
 benny_id = int(os.getenv('TARGET_ID'))
 channel_id = int(os.getenv('CHANNEL_ID'))
-the_benny = False
+the_benny_target = Target()
 time_before = 0
 
 voice_channels = []
+
+# method to add gamer to db
+async def add_gamer(member):
+	if member == client.user:
+		return
+	curr_id = str(member.id)
+	curr_name = member.name
+	db = Database()
+	if not await db.is_gamer_in_db(curr_id):
+		await db.add_benny_gamer(curr_id, curr_name)
+		await db.add_gamer_to_total_log(curr_id)
+
+
+async def get_discord_id(string):
+	id_string = ''
+	for c in string:
+		if c.isdigit():
+			id_string = ''.join([id_string, c])
+	return id_string
+
 
 async def is_benny_in_vc():
 	global voice_channels, benny_id
@@ -64,9 +85,23 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
+	print(message.content[2:-1])
 	global channel_id
 	if message.author == client.user:
         	return
+
+
+	# add method to target user
+	if message.content.startswith("$benny_target"):
+		msg = message.content.split(' ')
+		if len(msg) == 2 and len(msg[1]) == 21:
+			curr_id = await get_discord_id(msg[1])
+			user = client.get_user(curr_id)
+			print(curr_id)
+			if user:
+				pass
+				#await add_gamer(user)
+
 
 	if message.content.startswith("$benny_help"):
 		msg = '''
@@ -109,6 +144,7 @@ async def on_message(message):
 @client.event
 async def on_ready():
 	print(f"THE BENNINATOR HAS STARTED")
+
 	channels = client.get_all_channels()
 	global the_benny, benny_id, voice_channels, time_before
 	m = None

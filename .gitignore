@@ -2,4 +2,5 @@
 /venv
 test.py
 benny_base.db
+.database.py.swp
 .env
