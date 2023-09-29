@@ -73,7 +73,7 @@ class Database:
 			total_time = time_in_seconds + curr_time
 			self.cursor.execute(f'''
 					    UPDATE log_total
-					    SET timestamp = \'{datetime.now()}\', time_in_seconds = {total_time} 
+					    SET timestamp = \'{datetime.now().strftime("%y-%m-%d %H:%M:%S")}\', time_in_seconds = {total_time} 
 					    WHERE discord_id={discord_id};
 					    ''')
 		except sqlite3.Error as e:
