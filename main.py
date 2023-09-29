@@ -156,7 +156,7 @@ async def on_ready():
     print(f"THE BENNINATOR HAS STARTED")
 
     global the_benny_target, voice_channels, server_id, time_before
-    tracked_gamer = await Database().get_tracked_gamer()
+    tracked_gamer = (await Database().get_tracked_gamer())[0]
     if tracked_gamer:
         the_benny_target = client.get_guild(server_id).get_member(tracked_gamer)
         if the_benny_target.voice.self_deaf:
