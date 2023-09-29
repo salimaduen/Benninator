@@ -104,6 +104,14 @@ async def on_message(message):
             msg = ''.join(['There is currently no target'])
         await client.get_channel(channel_id).send(msg)
 
+    if message.content.startswith("$benny_clear"):
+        msg = ''
+        if the_benny_target:
+            the_benny_target = None
+            msg = ''.join(['The target has been cleared!'])
+        else:
+            msg = ''.join(['There was no target to clear!'])
+        await client.get_channel(channel_id).send(msg)
 
     if message.content.startswith("$benny_help"):
         msg = '''
