@@ -83,7 +83,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # add method to target user
+    # TODO add method for showing leaderboards
+
     if message.content.startswith("$benny_target"):
         msg = message.content.split(' ')
         if len(msg) == 2 and len(msg[1]) == 21:
