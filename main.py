@@ -21,7 +21,6 @@ time_before: datetime
 
 voice_channels = []
 
-
 # method to add gamer to db
 async def add_gamer(member):
     if member == client.user:
