@@ -108,6 +108,7 @@ async def on_message(message):
     if message.content.startswith("$benny_clear"):
         msg = ''
         if the_benny_target:
+            await Database().clear_benny_target()
             the_benny_target = None
             msg = ''.join(['The target has been cleared!'])
         else:

@@ -215,3 +215,18 @@ class Database:
 			await self.close()
 		except sqlite3.Error as e:
 			print(e)
+
+	async def clear_benny_target(self):
+		if not self.conn:
+			await self.connect()
+
+		try:
+			self.cursor.execute('''
+			UPDATE benny_gamers 
+			SET is_tracked = false 
+			WHERE is_tracked = true;''')
+			self.conn.commit()
+			await self.close()
+		except sqlite3.Error as e:
+			print(e)
+
