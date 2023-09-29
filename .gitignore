@@ -3,5 +3,6 @@
 /.idea
 test.py
 benny_base.db
+nohup.out
 .database.py.swp
 .env
