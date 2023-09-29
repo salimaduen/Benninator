@@ -56,23 +56,24 @@ async def calculate_time():
 async def on_voice_state_update(member, before, after):
     global time_before
     global the_benny_target
-    if not before.channel and member.id == the_benny_target.id:
-        print('JOINED VOICE CHAT')
-        if member.voice.self_deaf:
-            time_before = datetime.now()
-
-    if the_benny_target and member.id == benny_id:
-        if before.channel and not after.channel:
-            print('LEFT VOICE CHAT')
-            if before.self_deaf and not after.self_deaf:
-                await calculate_time()
-        else:
-            if not before.self_deaf and after.self_deaf:
-                print('DEAFENED')
+    if the_benny_target:
+        if not before.channel and member.id == the_benny_target.id:
+            print('JOINED VOICE CHAT')
+            if member.voice.self_deaf:
                 time_before = datetime.now()
-            if before.self_deaf and not after.self_deaf:
-                print('UNDEAFENED')
-                await calculate_time()
+
+        if the_benny_target and member.id == benny_id:
+            if before.channel and not after.channel:
+                print('LEFT VOICE CHAT')
+                if before.self_deaf and not after.self_deaf:
+                    await calculate_time()
+            else:
+                if not before.self_deaf and after.self_deaf:
+                    print('DEAFENED')
+                    time_before = datetime.now()
+                if before.self_deaf and not after.self_deaf:
+                    print('UNDEAFENED')
+                    await calculate_time()
 
 
 @client.event
