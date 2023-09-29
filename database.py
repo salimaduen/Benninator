@@ -101,8 +101,8 @@ class Database:
 		query = '''
 			SELECT timestamp, time_in_seconds
 			FROM benny_log
-			ORDER BY timestamp DESC
 			WHERE discord_id = ?
+			ORDER BY timestamp DESC
 			LIMIT 10;
 			'''
 
