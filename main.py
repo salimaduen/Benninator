@@ -117,9 +117,12 @@ async def on_message(message):
     if message.content.startswith("$benny_help"):
         msg = '''
 		List of commands:
-		$benny_log - Prints the ten most recent benny logs
-		$benny_total - Prints the total benny deafened time
-		$benny_code - Prints the info for the source code
+	$benny_log - Prints the ten most recent benny logs
+	$benny_total - Prints the total benny deafened time
+	$benny_code - Prints the info for the source code
+	$benny_clear - Clears the current target
+	$benny_who - Prints the current target if any
+	$benny_target - select a target by @
 		      '''
         await client.get_channel(channel_id).send(msg)
 
@@ -147,7 +150,7 @@ async def on_message(message):
 
     if message.content.startswith("$benny_code"):
         msg = f'''The benninator is an open source project.
-		If you want to contribute just get the code from {os.getenv('GITHUB')}
+	If you want to contribute just get the code from {os.getenv('GITHUB')}
 			  '''
         await client.get_channel(channel_id).send(msg)
 
