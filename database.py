@@ -98,16 +98,16 @@ class Database:
 	async def get_benny_log(self, discord_id):
 		if not self.conn:
 			await self.connect()
-		query = '''
+		query = f'''
 			SELECT timestamp, time_in_seconds
 			FROM benny_log
-			WHERE discord_id = ?
+			WHERE discord_id = {discord_id}
 			ORDER BY timestamp DESC
 			LIMIT 10;
 			'''
 
 		try:
-			self.cursor.execute(query, tuple(discord_id))
+			self.cursor.execute(query)
 			rows = self.cursor.fetchall()
 			await self.close()
 			return rows
