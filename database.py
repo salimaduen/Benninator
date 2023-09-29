@@ -107,7 +107,7 @@ class Database:
 			'''
 
 		try:
-			self.cursor.execute(query, discord_id)
+			self.cursor.execute(query, tuple(discord_id))
 			rows = self.cursor.fetchall()
 			await self.close()
 			return rows
