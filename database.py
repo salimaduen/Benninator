@@ -203,12 +203,12 @@ class Database:
 			if r:
 				self.cursor.execute('''UPDATE benny_gamers
 				                    SET is_tracked = false
-				                    WHERE discord_id = ?
+				                    WHERE discord_id = ?;
 				                    ''', r)
 			self.cursor.execute(f'''
-					    UPDATE log_total
+					    UPDATE benny_gamers
 					    SET is_tracked = true
-					    WHERE discord_id={new_id};
+					    WHERE discord_id = {new_id};
 					    ''')
 			self.conn.commit()
 			await self.close()
