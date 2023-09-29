@@ -207,7 +207,9 @@ class Database:
 				                    ''', r)
 			self.cursor.execute('''UPDATE benny_gamers
 				                    SET is_tracked = true
-				                    WHERE discord_id = ?
+				                    WHERE discord_id = ?;
 				                    ''', new_id)
+			self.conn.commit()
+			await self.close()
 		except sqlite3.Error as e:
 			print(e)
