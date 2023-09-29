@@ -95,18 +95,19 @@ class Database:
 		except sqlite3.Error as e:
 			print(e)
 
-	async def get_benny_log(self):
+	async def get_benny_log(self, discord_id):
 		if not self.conn:
 			await self.connect()
 		query = '''
 			SELECT timestamp, time_in_seconds
 			FROM benny_log
 			ORDER BY timestamp DESC
+			WHERE discord_id = ?
 			LIMIT 10;
 			'''
 
 		try:
-			self.cursor.execute(query)
+			self.cursor.execute(query, discord_id)
 			rows = self.cursor.fetchall()
 			await self.close()
 			return rows

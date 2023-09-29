@@ -104,6 +104,7 @@ async def on_message(message):
             msg = ''.join(['There is currently no target'])
         await client.get_channel(channel_id).send(msg)
 
+
     if message.content.startswith("$benny_help"):
         msg = '''
 		List of commands:
@@ -114,7 +115,7 @@ async def on_message(message):
         await client.get_channel(channel_id).send(msg)
 
     if message.content.startswith("$benny_log"):
-        rows = await Database().get_benny_log()
+        rows = await Database().get_benny_log(the_benny_target.id)
         if rows:
             final_rows = ['THE TEN MOST RECENT LOGS:']
             for row in rows:
@@ -127,7 +128,7 @@ async def on_message(message):
         await client.get_channel(channel_id).send(f)
 
     if message.content.startswith("$benny_total"):
-        t = await Database().get_total_time()
+        t = await Database().get_total_time(the_benny_target.id)
         if t:
             t, total = t[0]
             msg = f'As of {t} <@{message.author.id}> has been deafened for a total of {total:.4} seconds'
