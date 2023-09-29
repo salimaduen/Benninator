@@ -129,7 +129,7 @@ async def on_message(message):
     if message.content.startswith("$benny_log"):
         rows = await Database().get_benny_log(the_benny_target.id)
         if rows:
-            final_rows = ['THE TEN MOST RECENT LOGS:']
+            final_rows = [f'THE TEN MOST RECENT LOGS FOR <@{the_benny_target.id}>:']
             for row in rows:
                 curr = ''.join([row[0], ' | ', f'{str(row[1]):.4}', ' SECONDS'])
                 final_rows.append(curr)
@@ -143,7 +143,7 @@ async def on_message(message):
         t = await Database().get_total_time(the_benny_target.id)
         if t:
             t, total = t[0]
-            msg = f'As of {t} <@{message.author.id}> has been deafened for a total of {total:.4} seconds'
+            msg = f'As of {t[:-7]} <@{the_benny_target.id}> has been deafened for a total of {total:.3} seconds'
         else:
             msg = 'No total time available at this moment'
         await client.get_channel(channel_id).send(msg)
