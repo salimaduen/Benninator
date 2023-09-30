@@ -121,7 +121,7 @@ async def on_message(message):
         t = await Database().get_total_time(the_benny_target.id)
         if t:
             t, total = t[0]
-            msg = f'As of {t} <@{the_benny_target.id}> has been deafened for a total of {total:.3} seconds'
+            msg = f'As of {t} <@{the_benny_target.id}> has been deafened for a total of {await convert_time(total)}.'
         else:
             msg = 'No total time available at this moment'
         await client.get_channel(channel_id).send(msg)
