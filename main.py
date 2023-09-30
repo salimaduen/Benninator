@@ -47,7 +47,7 @@ async def calculate_time():
     await Database().add_benny_log(time_in_seconds=t, discord_id=the_benny_target.id)
     time_before = None
     print(t)
-    msg = f'TEST TEST \n<@{benny_id}> spent {t:.3} seconds muted'
+    msg = f'TEST TEST \n<@{the_benny_target.id}> spent {t:.3} seconds muted'
     await client.get_channel(channel_id).send(msg)
 
 
