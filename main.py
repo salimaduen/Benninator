@@ -1,8 +1,8 @@
 from database import Database
 from datetime import datetime
 from dotenv import load_dotenv
+from helper import *
 import discord
-import time
 import os
 
 intents = discord.Intents.default()
@@ -21,33 +21,13 @@ time_before: datetime
 
 voice_channels = []
 
-# method to add gamer to db
-async def add_gamer(member):
-    if member == client.user:
-        return
-    curr_id = str(member.id)
-    curr_name = member.name
-    db = Database()
-    if not await db.is_gamer_in_db(curr_id):
-        await db.add_benny_gamer(curr_id, curr_name)
-        await db.add_gamer_to_total_log(curr_id)
-
-
-async def get_discord_id(string):
-    id_string = ''
-    for c in string:
-        if c.isdigit():
-            id_string = ''.join([id_string, c])
-    return id_string
-
 
 async def calculate_time():
     global time_before, the_benny_target, channel_id
     t = (datetime.now() - time_before).total_seconds()
     await Database().add_benny_log(time_in_seconds=t, discord_id=the_benny_target.id)
     time_before = None
-    print(t)
-    msg = f'TEST TEST \n<@{benny_id}> spent {t:.3} seconds muted'
+    msg = f'TEST TEST \n<@{benny_id}> spent {await convert_time(t)}.'
     await client.get_channel(channel_id).send(msg)
 
 
@@ -77,7 +57,6 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_message(message):
-
     global the_benny_target, channel_id, server_id
     if message.author == client.user:
         return
@@ -90,7 +69,7 @@ async def on_message(message):
             curr_id = await get_discord_id(msg[1])
             member = client.get_guild(server_id).get_member(int(curr_id))
             if member:
-                await add_gamer(member)
+                await add_gamer(member, client)
                 await Database().make_new_benny_target(member.id)
                 the_benny_target = member
                 msg = f'The new target is <@{the_benny_target.id}>!'
@@ -157,17 +136,17 @@ async def on_message(message):
 
 @client.event
 async def on_ready():
-	print(f"THE BENNINATOR HAS STARTED")
+    print(f"THE BENNINATOR HAS STARTED")
 
-	global the_benny_target, voice_channels, server_id, time_before
-	tracked_gamer = (await Database().get_tracked_gamer())
-	if tracked_gamer:
-		tracked_gamer = tracked_gamer[0]
-		the_benny_target = client.get_guild(server_id).get_member(tracked_gamer)
-		if the_benny_target.voice and the_benny_target.voice.self_deaf:
-			time_before = datetime.now()
-	else:
-		the_benny_target = None
+    global the_benny_target, voice_channels, server_id, time_before
+    tracked_gamer = (await Database().get_tracked_gamer())
+    if tracked_gamer:
+        tracked_gamer = tracked_gamer[0]
+        the_benny_target = client.get_guild(server_id).get_member(tracked_gamer)
+        if the_benny_target.voice and the_benny_target.voice.self_deaf:
+            time_before = datetime.now()
+    else:
+        the_benny_target = None
 
 
 client.run(os.getenv('BOT_ID'))
