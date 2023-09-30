@@ -27,7 +27,12 @@ async def calculate_time():
     t = (datetime.now() - time_before).total_seconds()
     await Database().add_benny_log(time_in_seconds=t, discord_id=the_benny_target.id)
     time_before = None
+<<<<<<< HEAD
     msg = f'TEST TEST \n<@{benny_id}> spent {await convert_time(t)}.'
+=======
+    print(t)
+    msg = f'TEST TEST \n<@{the_benny_target.id}> spent {t:.3} seconds muted'
+>>>>>>> f7a7d0554a72da83e7d004b82c30b5e63593b8fe
     await client.get_channel(channel_id).send(msg)
 
 
@@ -41,7 +46,7 @@ async def on_voice_state_update(member, before, after):
             if member.voice.self_deaf:
                 time_before = datetime.now()
 
-        if the_benny_target and member.id == benny_id:
+        if the_benny_target and member.id == the_benny_target.id:
             if before.channel and not after.channel:
                 print('LEFT VOICE CHAT')
                 if before.self_deaf and not after.self_deaf:
