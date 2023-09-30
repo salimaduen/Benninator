@@ -13,7 +13,6 @@ client = discord.Client(intents=intents)
 
 load_dotenv()
 
-benny_id = int(os.getenv('TARGET_ID'))
 channel_id = int(os.getenv('CHANNEL_ID'))
 server_id = int(os.getenv('SERVER_ID'))
 the_benny_target: discord.Member
@@ -27,12 +26,7 @@ async def calculate_time():
     t = (datetime.now() - time_before).total_seconds()
     await Database().add_benny_log(time_in_seconds=t, discord_id=the_benny_target.id)
     time_before = None
-<<<<<<< HEAD
-    msg = f'TEST TEST \n<@{benny_id}> spent {await convert_time(t)}.'
-=======
-    print(t)
-    msg = f'TEST TEST \n<@{the_benny_target.id}> spent {t:.3} seconds muted'
->>>>>>> f7a7d0554a72da83e7d004b82c30b5e63593b8fe
+    msg = f'TEST TEST \n<@{the_benny_target.id}> spent {await convert_time(t)}.'
     await client.get_channel(channel_id).send(msg)
 
 
