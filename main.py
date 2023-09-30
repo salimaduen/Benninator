@@ -61,7 +61,7 @@ async def on_voice_state_update(member, before, after):
             if member.voice.self_deaf:
                 time_before = datetime.now()
 
-        if the_benny_target and member.id == benny_id:
+        if the_benny_target and member.id == the_benny_target.id:
             if before.channel and not after.channel:
                 print('LEFT VOICE CHAT')
                 if before.self_deaf and not after.self_deaf:
